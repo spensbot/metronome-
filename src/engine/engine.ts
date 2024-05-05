@@ -1,9 +1,10 @@
 import AudioEngine from "./AudioEngine"
 import MidiEngine from "./MidiEngine"
 import onNextGesture from "./onNextGesture"
+import { animationStore, setAnimationState } from "../redux/animationStore"
 
 export class Engine {
-  private audioEngine: AudioEngine = new AudioEngine()
+  audioEngine: AudioEngine = new AudioEngine()
   private midiEngine: MidiEngine = new MidiEngine()
 
   init() {
@@ -21,7 +22,17 @@ export class Engine {
 }
 
 const engine = new Engine()
+const audio = engine.audioEngine
 
 onNextGesture(() => { engine.init() })
+
+function animate() {
+  animationStore.dispatch(setAnimationState({
+    cursorRatio: audio.visualizerRatio(audio.currentTime())
+  }))
+  requestAnimationFrame(animate)
+}
+
+requestAnimationFrame(animate)
 
 export default engine

@@ -1,5 +1,6 @@
 export function getAudioContext() {
-  const audioContextClass = window.AudioContext || (window as any).webkitAudioContext
+  // TODO: Handle browsers with limited support
+  const audioContextClass = window.AudioContext
   return new audioContextClass()
 }
 

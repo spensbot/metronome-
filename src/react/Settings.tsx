@@ -1,10 +1,12 @@
 import Slider from "./base/Slider"
-import { setBpm, setMetronomeGain } from "../redux/settingsSlice"
+import { setTempo, setMetronomeGain } from "../redux/settingsSlice"
 import { useSettings, useDispatch } from "../redux/hooks"
 import styled from "@emotion/styled"
+import { Tempo } from "../engine/Clock"
 
 export default function Settings() {
-  const { bpm, metronomeGain } = useSettings((settings) => settings)
+  const { tempo, metronomeGain } = useSettings((settings) => settings)
+  const bpm = tempo.bpm()
   const dispatch = useDispatch()
 
   return (
@@ -16,7 +18,7 @@ export default function Settings() {
         valueDisplay={`${bpm}`}
         value={bpm}
         onChange={(_e, value) => {
-          dispatch(setBpm(value as number))
+          dispatch(setTempo(Tempo.bpm(value as number)))
         }}
       />
       <Gain>

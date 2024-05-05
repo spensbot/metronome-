@@ -1,26 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { Tempo } from '../engine/Clock'
 
 export interface SettingsState {
-  bpm: number,
+  tempo: Tempo,
   metronomeGain: number,
   snareGain: number,
   kickGain: number
 }
 
 const initialState: SettingsState = {
-  bpm: 120,
+  tempo: Tempo.bpm(120),
   metronomeGain: 1.0,
   snareGain: 1.0,
   kickGain: 1.0
 }
 
 export const settingsSlice = createSlice({
-  name: 'counter',
+  name: 'settings',
   initialState,
   reducers: {
-    setBpm: (state, action: PayloadAction<number>) => {
-      state.bpm = action.payload
+    setTempo: (state, action: PayloadAction<Tempo>) => {
+      state.tempo = action.payload
     },
     setMetronomeGain: (state, action: PayloadAction<number>) => {
       state.metronomeGain = action.payload
@@ -35,6 +36,6 @@ export const settingsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setBpm, setMetronomeGain, setSnareGain, setKickGain } = settingsSlice.actions
+export const { setTempo, setMetronomeGain, setSnareGain, setKickGain } = settingsSlice.actions
 
 export default settingsSlice.reducer
