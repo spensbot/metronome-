@@ -1,6 +1,8 @@
 import { MidiMessage, parseMidiMessage } from './midiUtils'
 
-function onMidi(access: MIDIAccess, cb: (message: MidiMessage) => void) {
+type MidiCb = (message: MidiMessage) => void
+
+function onMidi(access: MIDIAccess, cb: MidiCb) {
   console.log('setting midi')
   access.inputs.forEach(input => {
     input.onmidimessage = e => {
@@ -13,13 +15,14 @@ function onMidi(access: MIDIAccess, cb: (message: MidiMessage) => void) {
 export default class MidiEngine {
   midiAccess: MIDIAccess | null = null
 
-  async init() {
+  async init(onPress: MidiCb) {
     this.midiAccess = await navigator.requestMIDIAccess()
 
-    onMidi(this.midiAccess, message => {
+    onMidi(this.midiAccess, (message: MidiMessage) => {
       if (message.type === 'on') {
-        const diff = performance.now() - message.timeStamp
-        console.log(`${message.note} | ${message.velocity} | ${diff}`)
+        onPress(message)
+      } else {
+        console.log(message)
       }
     })
   }

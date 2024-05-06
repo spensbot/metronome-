@@ -8,11 +8,16 @@ export interface SliderProps extends _SliderProps {
 }
 
 const Slider: React.FC<SliderProps> = (props) => {
+  const sliderProps = {
+    ...props,
+  }
+  delete sliderProps.valueDisplay
+
   return (
     <Root>
       <Label text={props.label} style={{ marginRight: "1rem" }} />
       <Label text={props.valueDisplay} style={{ marginRight: "1rem" }} />
-      <_Slider {...props} />
+      <_Slider {...sliderProps} />
     </Root>
   )
 }

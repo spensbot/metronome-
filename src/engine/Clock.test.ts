@@ -24,11 +24,13 @@ test('Duration.ms()', () => {
 })
 
 test('Tempo.bpm()', () => {
-  expect(Tempo.bpm(60).bpm()).toBe(60)
+  console.log(Tempo.bpm(120).bpm())
+
+  expect(Tempo.bpm(120).bpm()).toBe(120)
 })
 
 test('Tempo.period()', () => {
-  expect(Tempo.bpm(60).period().s()).toBe(1)
+  expect(Tempo.bpm(120).period().s()).toBe(0.5)
 })
 
 test('ClockDelta', () => {

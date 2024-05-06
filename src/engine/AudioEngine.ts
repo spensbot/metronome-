@@ -1,7 +1,7 @@
 import { getAudioContext, loadBuffer } from './audioUtils'
 import metronomePath from '/metronome.mp3'
 import { store } from '../redux/store'
-import { AudioTime, ClockDelta, Tempo } from './Clock'
+import { AudioTime, ClockDelta, Duration, PerfTime, Tempo } from './Clock'
 
 interface GraphData {
   ctx: AudioContext
@@ -100,10 +100,24 @@ export default class AudioEngine {
     }
   }
 
+  audioTime(perfTime: PerfTime): AudioTime {
+    if (this.graph) {
+      return perfTime.toAudio(this.graph.clockDelta)
+    } else {
+      return AudioTime.zero()
+    }
+  }
+
+  clockDelta(): Duration {
+    return this.graph ? this.graph.clockDelta.duration : Duration.s(0)
+  }
+
   private playMetronomeSound(gain: number, time: AudioTime) {
     if (!this.graph) return
 
     const { ctx, metronome, gainNode } = this.graph
+
+    this.graph.clockDelta = new ClockDelta(ctx)
 
     const source = ctx.createBufferSource()
     source.buffer = metronome
