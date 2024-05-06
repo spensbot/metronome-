@@ -3,7 +3,6 @@ import { MidiMessage, parseMidiMessage } from './midiUtils'
 type MidiCb = (message: MidiMessage) => void
 
 function onMidi(access: MIDIAccess, cb: MidiCb) {
-  console.log('setting midi')
   access.inputs.forEach(input => {
     input.onmidimessage = e => {
       const message = parseMidiMessage(e as MIDIMessageEvent)
@@ -21,8 +20,6 @@ export default class MidiEngine {
     onMidi(this.midiAccess, (message: MidiMessage) => {
       if (message.type === 'on') {
         onPress(message)
-      } else {
-        console.log(message)
       }
     })
   }

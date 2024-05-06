@@ -17,7 +17,6 @@ async function createGraph(): Promise<GraphData> {
   const metronome = await loadBuffer(ctx, metronomePath)
   gainNode.connect(ctx.destination)
 
-
   return {
     ctx,
     gainNode,

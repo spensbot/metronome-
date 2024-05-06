@@ -24,8 +24,6 @@ test('Duration.ms()', () => {
 })
 
 test('Tempo.bpm()', () => {
-  console.log(Tempo.bpm(120).bpm())
-
   expect(Tempo.bpm(120).bpm()).toBe(120)
 })
 
