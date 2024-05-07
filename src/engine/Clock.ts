@@ -29,7 +29,7 @@ export class Duration {
     return new Duration(this.seconds + other.seconds)
   }
 
-  debug(): string {
+  toString(): string {
     return `${this.s().toFixed(3)}s`
   }
 }
@@ -54,16 +54,6 @@ export class Tempo {
   }
 }
 
-export class ClockDelta {
-  duration: Duration
-
-  constructor(ctx: AudioContext) {
-    const perf = PerfTime.now().duration
-    const audio = AudioTime.now(ctx).duration
-    this.duration = perf.minus(audio)
-  }
-}
-
 // DOMHighResTimesStamp
 // https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp
 export class PerfTime {
@@ -81,10 +71,6 @@ export class PerfTime {
   // is based on the same DOMHighResTimeStamp as window.performance.now()
   static fromMidi(midiMessageEvent: MIDIMessageEvent): PerfTime {
     return new PerfTime(Duration.ms(midiMessageEvent.timeStamp))
-  }
-
-  toAudio(delta: ClockDelta): AudioTime {
-    return new AudioTime(this.duration.minus(delta.duration))
   }
 }
 
@@ -109,7 +95,10 @@ export class AudioTime {
     return new AudioTime(this.duration.plus(duration))
   }
 
-  toPerf(delta: ClockDelta): PerfTime {
-    return new PerfTime(this.duration.plus(delta.duration))
+  toPerf(ctx: AudioContext): PerfTime {
+    const perfNow = PerfTime.now().duration
+    const audioNow = AudioTime.now(ctx).duration
+    const delta = perfNow.minus(audioNow)
+    return new PerfTime(this.duration.plus(delta))
   }
 }

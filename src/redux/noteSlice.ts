@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { AudioTime } from '../engine/Clock'
 import { MidiMessage } from '../engine/midiUtils'
 
 export interface NoteState {
-  focusedNotes: MidiMessage<AudioTime>[]
+  focusedNotes: MidiMessage[]
 }
 
 const initialState: NoteState = {
@@ -15,7 +14,7 @@ export const noteSlice = createSlice({
   name: 'note',
   initialState,
   reducers: {
-    addNote: (state, action: PayloadAction<MidiMessage<AudioTime>>) => {
+    addNote: (state, action: PayloadAction<MidiMessage>) => {
       state.focusedNotes.push(action.payload)
     },
     clearNotes: (state) => {

@@ -1,13 +1,12 @@
 import { getAudioContext, loadBuffer } from './audioUtils'
 import metronomePath from '/metronome.mp3'
 import { store } from '../redux/store'
-import { AudioTime, ClockDelta, Duration, PerfTime, Tempo } from './Clock'
+import { AudioTime, Duration, PerfTime, Tempo } from './Clock'
 
 interface GraphData {
   ctx: AudioContext
   metronome: AudioBuffer
   gainNode: GainNode
-  clockDelta: ClockDelta
 }
 
 async function createGraph(): Promise<GraphData> {
@@ -20,12 +19,15 @@ async function createGraph(): Promise<GraphData> {
   return {
     ctx,
     gainNode,
-    metronome,
-    clockDelta: new ClockDelta(ctx)
+    metronome
   }
 }
 
+let desiredTime = 0
+let drift = 0
+
 export default class AudioEngine {
+  nextClick: AudioTime = AudioTime.zero()
   lastClick: AudioTime = AudioTime.zero()
   tempo: Tempo = Tempo.bpm(120)
   timeoutId: number | null = null
@@ -45,6 +47,7 @@ export default class AudioEngine {
     this.stop()
 
     const prepNextClick = (time: AudioTime) => {
+      console.log(`prepNextClick`)
       const { tempo, metronomeGain } = store.getState().settings
       this.tempo = tempo
 
@@ -54,10 +57,19 @@ export default class AudioEngine {
 
       const nextClickTime = time.plus(period)
 
+      // TODO: Fix this so it keeps setTimeout synchronized
+      // This current approach will drift
+      drift += performance.now() - desiredTime
+      desiredTime = performance.now() + period.ms()
+      // console.log(`drift: ${drift.toFixed(1)} | now: ${AudioTime.now(this.graph!.ctx).duration} | nextClickTime: ${nextClickTime.duration}`)
+
       this.timeoutId = window.setTimeout(() => prepNextClick(nextClickTime), period.ms())
     }
 
-    prepNextClick(this.currentTime())
+    const { tempo, metronomeGain } = store.getState().settings
+    this.tempo = tempo
+
+    prepNextClick(this.currentTime().plus(tempo.period()))
   }
 
   stop() {
@@ -66,9 +78,31 @@ export default class AudioEngine {
     }
   }
 
-  currentTime(): AudioTime {
+  // Similar to beatRatio, but gives the position of the time in the visualizer
+  visualizerRatio(time: PerfTime): number {
+    const beatRatio = this.beatRatio(time)
+    if (beatRatio < 0.5) {
+      return beatRatio + 0.5 // 0.5 to 1
+    } else {
+      return beatRatio - 0.5
+    }
+  }
+
+  closestClick(): AudioTime {
+    const now = this.currentTime().duration.s()
+    const last = this.lastClick.duration.s()
+    const next = this.nextClick.duration.s()
+    if (Math.abs(now - last) < Math.abs(now - next)) {
+      return this.lastClick
+    } else {
+      return this.nextClick
+    }
+  }
+
+  private currentTime(): AudioTime {
     if (this.graph) {
-      return AudioTime.now(this.graph.ctx)
+      const ctx = this.graph.ctx
+      return AudioTime.now(ctx)
     } else {
       return AudioTime.zero()
     }
@@ -76,10 +110,11 @@ export default class AudioEngine {
 
   // Returns the how far the time is between metronome beats
   // From 0 to 1. Assuming time is between lastClick and nextClick
-  beatRatio(time: AudioTime): number {
+  private beatRatio(time: PerfTime): number {
     if (this.graph) {
       const period = this.tempo.period()
-      const lastClick = this.lastClick.duration
+      const nextClick = this.nextClick.toPerf(this.graph.ctx).duration
+      const lastClick = nextClick.minus(period)
 
       const delta = time.duration.minus(lastClick)
 
@@ -89,40 +124,19 @@ export default class AudioEngine {
     }
   }
 
-  // Similar to beatRatio, but gives the position of the time in the visualizer
-  visualizerRatio(time: AudioTime): number {
-    const beatRatio = this.beatRatio(time)
-    if (beatRatio < 0.5) {
-      return beatRatio + 0.5 // 0.5 to 1
-    } else {
-      return beatRatio - 0.5
-    }
-  }
-
-  audioTime(perfTime: PerfTime): AudioTime {
-    if (this.graph) {
-      return perfTime.toAudio(this.graph.clockDelta)
-    } else {
-      return AudioTime.zero()
-    }
-  }
-
-  clockDelta(): Duration {
-    return this.graph ? this.graph.clockDelta.duration : Duration.s(0)
-  }
-
   private playMetronomeSound(gain: number, time: AudioTime) {
     if (!this.graph) return
 
     const { ctx, metronome, gainNode } = this.graph
 
-    this.graph.clockDelta = new ClockDelta(ctx)
-
     const source = ctx.createBufferSource()
     source.buffer = metronome
     source.connect(gainNode)
-    gainNode.gain.setValueAtTime(gain, 0)
+    gainNode.gain.setValueAtTime(gain, time.duration.s())
     source.start(time.duration.s())
-    this.lastClick = time
+    this.lastClick = this.nextClick
+    this.nextClick = time
+
+    console.log(`requestTime: ${time.duration} | now: ${AudioTime.now(this.graph!.ctx).duration}`)
   }
 }

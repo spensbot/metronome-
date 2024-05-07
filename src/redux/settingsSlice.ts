@@ -11,7 +11,7 @@ export interface SettingsState {
 
 const initialState: SettingsState = {
   tempo: Tempo.bpm(60),
-  metronomeGain: 0.1,
+  metronomeGain: 0.5,
   snareGain: 1.0,
   kickGain: 1.0
 }

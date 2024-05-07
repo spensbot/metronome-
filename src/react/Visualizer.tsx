@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import engine from "../engine/engine"
 import useAnimatedValue from "./hooks/useAnimatedValue"
 import { MidiMessage } from "../engine/midiUtils"
-import { AudioTime } from "../engine/Clock"
+import { PerfTime } from "../engine/Clock"
 import { useNote } from "../redux/hooks"
 
 const CURSOR_WIDTH = 10
@@ -10,7 +10,7 @@ const CURSOR_WIDTH = 10
 function Cursor() {
   const cursorRatio = useAnimatedValue(() => {
     const audio = engine.audioEngine
-    return audio.visualizerRatio(audio.currentTime())
+    return audio.visualizerRatio(PerfTime.now())
   })
 
   return <CursorRoot style={{ left: `${cursorRatio * 100 - CURSOR_WIDTH}%` }} />
@@ -24,7 +24,7 @@ const CursorRoot = styled.div`
   background: linear-gradient(to right, transparent, #fff7);
 `
 
-function Note({ note }: { note: MidiMessage<AudioTime> }) {
+function Note({ note }: { note: MidiMessage }) {
   const ratio = engine.audioEngine.visualizerRatio(note.time)
 
   return <NoteRoot style={{ left: `${ratio * 100}%` }} />

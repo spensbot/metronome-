@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import { Tempo, Duration, AudioTime, PerfTime, ClockDelta } from './Clock'
+import { Tempo, Duration, AudioTime, PerfTime } from './Clock'
 import { getAudioContext } from './audioUtils'
 
 class AudioContextMock {
@@ -31,20 +31,8 @@ test('Tempo.period()', () => {
   expect(Tempo.bpm(120).period().s()).toBe(0.5)
 })
 
-test('ClockDelta', () => {
-  const delta = new ClockDelta(ctx)
-  const perf_ms = window.performance.now()
-  const audio_ms = ctx.currentTime * 1000
-  expect(delta.duration.ms()).toBeCloseTo(perf_ms - audio_ms)
-})
-
 test('PerfTime.now()', () => {
   expect(PerfTime.now().duration.ms()).toBeCloseTo(window.performance.now())
-})
-
-test('PerfTime.toAudio()', () => {
-  const delta = new ClockDelta(ctx)
-  expect(PerfTime.now().toAudio(delta).duration.s()).toBe(ctx.currentTime)
 })
 
 test('AudioTime.now()', () => {
@@ -52,6 +40,5 @@ test('AudioTime.now()', () => {
 })
 
 test('AudioTime.toPerf()', () => {
-  const delta = new ClockDelta(ctx)
-  expect(AudioTime.now(ctx).toPerf(delta).duration.ms()).toBeCloseTo(window.performance.now())
+  expect(AudioTime.now(ctx).toPerf(ctx).duration.ms()).toBeCloseTo(window.performance.now())
 })
