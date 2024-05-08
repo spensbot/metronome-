@@ -35,6 +35,18 @@ test('PerfTime.now()', () => {
   expect(PerfTime.now().duration.ms()).toBeCloseTo(window.performance.now())
 })
 
+test('PerfTime.findClosest() less', () => {
+  const closest = new PerfTime(Duration.s(0.9))
+  const candidates = [new PerfTime(Duration.s(0)), closest, new PerfTime(Duration.s(2))]
+  expect(new PerfTime(Duration.s(1)).findClosest(candidates)).toBe(closest)
+})
+
+test('PerfTime.findClosest() greater', () => {
+  const closest = new PerfTime(Duration.s(1.1))
+  const candidates = [new PerfTime(Duration.s(0)), closest, new PerfTime(Duration.s(2))]
+  expect(new PerfTime(Duration.s(1)).findClosest(candidates)).toBe(closest)
+})
+
 test('AudioTime.now()', () => {
   expect(AudioTime.now(ctx).duration.s()).toBe(ctx.currentTime)
 })

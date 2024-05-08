@@ -34,29 +34,17 @@ export class Engine {
         // const latency = ctx.outputLatency
         // console.log(`nowPerf ${nowPerf} latency: ${latency} outPerf ${outPerf}`)
 
-        const midiTime = message.time
-        const closestAudio = audio.closestClick().toPerf(ctx)
-        const delta = midiTime.duration.minus(closestAudio.duration)
-        console.log(`${delta}`)
+        // const midiTime = message.time
+        // const closestAudio = audio.closestClick().toPerf(ctx)
+        // const delta = midiTime.duration.minus(closestAudio.duration)
+        // console.log(`${delta}`)
       }
 
       store.dispatch(addNote(message))
     })
 
     const animate = () => {
-      const audio = this.audioEngine
-      const cursorRatio = audio.visualizerRatio(PerfTime.now())
-      if (cursorRatio < 0.5 && this.lastCursorRatio > 0.5) {
-        // Focus Shift
-        store.dispatch(clearNotes())
-      }
-      this.lastCursorRatio = cursorRatio
-
-      // animationStore.dispatch(setAnimationState({
-      //   cursorRatio
-      // }))
-
-      // this.animationHandle = requestAnimationFrame(animate)
+      this.animationHandle = requestAnimationFrame(animate)
     }
 
     this.animationHandle = requestAnimationFrame(animate)

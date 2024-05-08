@@ -10,24 +10,23 @@ const CURSOR_WIDTH = 10
 function Cursor() {
   const cursorRatio = useAnimatedValue(() => {
     const audio = engine.audioEngine
-    return audio.visualizerRatio(PerfTime.now())
+    return 0.5
   })
 
-  return <CursorRoot style={{ left: `${cursorRatio * 100 - CURSOR_WIDTH}%` }} />
+  return <CursorRoot style={{ left: `${cursorRatio * 100}%` }} />
 }
 
 const CursorRoot = styled.div`
-  width: ${CURSOR_WIDTH}%;
+  width: 1px;
   height: 100%;
-  /* background-color: #ee5; */
+  background-color: #ee5;
   position: absolute;
-  background: linear-gradient(to right, transparent, #fff7);
 `
 
 function Note({ note }: { note: MidiMessage }) {
-  const ratio = engine.audioEngine.visualizerRatio(note.time)
+  // const ratio = engine.audioEngine.visualizerRatio(note.time)
 
-  return <NoteRoot style={{ left: `${ratio * 100}%` }} />
+  return <NoteRoot style={{ left: `${100}%` }} />
 }
 
 const NoteRoot = styled.div`

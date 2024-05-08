@@ -5,15 +5,13 @@ import { Tempo } from '../engine/Clock'
 export interface SettingsState {
   tempo: Tempo,
   metronomeGain: number,
-  snareGain: number,
-  kickGain: number
+  visualizerBeats: number, // how many beats can be seen on the visualizer at once
 }
 
 const initialState: SettingsState = {
   tempo: Tempo.bpm(60),
   metronomeGain: 0.5,
-  snareGain: 1.0,
-  kickGain: 1.0
+  visualizerBeats: 8
 }
 
 export const settingsSlice = createSlice({
@@ -26,16 +24,13 @@ export const settingsSlice = createSlice({
     setMetronomeGain: (state, action: PayloadAction<number>) => {
       state.metronomeGain = action.payload
     },
-    setSnareGain: (state, action: PayloadAction<number>) => {
-      state.snareGain = action.payload
-    },
-    setKickGain: (state, action: PayloadAction<number>) => {
-      state.kickGain = action.payload
+    setVisualizerBeats: (state, action: PayloadAction<number>) => {
+      state.visualizerBeats = action.payload
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setTempo, setMetronomeGain, setSnareGain, setKickGain } = settingsSlice.actions
+export const { setTempo, setMetronomeGain, setVisualizerBeats } = settingsSlice.actions
 
 export default settingsSlice.reducer

@@ -15,10 +15,10 @@ export default function Settings() {
         min={30}
         max={200}
         label="BPM: "
-        valueDisplay={`${bpm}`}
-        value={bpm}
+        valueDisplay={`${Math.round(bpm)}`}
+        value={Math.round(bpm)}
         onChange={(_e, value) => {
-          dispatch(setTempo(Tempo.bpm(value as number)))
+          dispatch(setTempo(Tempo.bpm(Math.round(value as number))))
         }}
       />
       <Gain>

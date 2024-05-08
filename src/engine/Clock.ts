@@ -54,7 +54,7 @@ export class Tempo {
   }
 }
 
-// DOMHighResTimesStamp
+// DOMHighResTimesStamp from performance.now()
 // https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp
 export class PerfTime {
   duration: Duration
@@ -71,6 +71,24 @@ export class PerfTime {
   // is based on the same DOMHighResTimeStamp as window.performance.now()
   static fromMidi(midiMessageEvent: MIDIMessageEvent): PerfTime {
     return new PerfTime(Duration.ms(midiMessageEvent.timeStamp))
+  }
+
+  private absDeltaS(other: PerfTime): number {
+    return Math.abs(this.duration.s() - other.duration.s())
+  }
+
+  // WARNING: Candidates can't be empty!
+  findClosest(candidates: PerfTime[]): PerfTime {
+    let closest: PerfTime | null = null
+
+    for (const candidate of candidates) {
+      if (closest === null) closest = candidate
+      if (this.absDeltaS(candidate) < this.absDeltaS(closest)) {
+        closest = candidate
+      }
+    }
+
+    return closest!
   }
 }
 
