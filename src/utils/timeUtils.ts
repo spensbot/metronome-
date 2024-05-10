@@ -69,8 +69,8 @@ export class PerfTime {
 
   // I havne't found docs to confirm. But many sources mention that the midi timestamp
   // is based on the same DOMHighResTimeStamp as window.performance.now()
-  static fromMidi(midiMessageEvent: MIDIMessageEvent): PerfTime {
-    return new PerfTime(Duration.ms(midiMessageEvent.timeStamp))
+  static fromEvent(event: Event): PerfTime {
+    return new PerfTime(Duration.ms(event.timeStamp))
   }
 
   private absDeltaS(other: PerfTime): number {

@@ -1,49 +1,29 @@
 import AudioEngine from "./AudioEngine"
-import MidiEngine from "./MidiEngine"
+import MidiEngine, { MidiPress } from "./MidiEngine"
 import onNextGesture from "./onNextGesture"
-import { animationStore, setAnimationState } from "../redux/animationStore"
 import { store } from '../redux/store'
-import { MidiMessage } from "./midiUtils"
-import { addNote, clearNotes } from "../redux/noteSlice"
-import { AudioTime, PerfTime } from "./Clock"
+import { addPress, setTime } from "../redux/metronomeSlice"
+import { KeyPress, KeyboardEngine } from "./KeyboardEngine"
+import { PerfTime } from "../utils/timeUtils"
 
 export class Engine {
   audioEngine: AudioEngine = new AudioEngine()
   private midiEngine: MidiEngine = new MidiEngine()
+  private keyboardEngine: KeyboardEngine = new KeyboardEngine()
   lastCursorRatio: number = 0
   animationHandle: number = 0
 
   init() {
     this.audioEngine.init()
-    this.midiEngine.init((message: MidiMessage) => {
-      if (this.audioEngine.graph !== null) {
-        const audio = this.audioEngine
-        const ctx = audio.graph!.ctx
-
-        // const perfNow = PerfTime.now().duration.debug()
-        // const messagePerf = message.time.duration.debug()
-        // const messageAudio = this.audioEngine.audioTime(message.time).duration.debug()
-        // const audioNow = this.audioEngine.currentTime().duration.debug()
-        // const delta = this.audioEngine.clockDelta().debug()
-        // const deltaNow = new ClockDelta(this.audioEngine.graph?.ctx).duration.debug()
-        // console.log(`Perf: ${perfNow} | Audio: ${audioNow} | Delta: ${delta}`)
-        // console.log(`Message Perf: ${messagePerf} | Audio: ${messageAudio} | DeltaNow: ${deltaNow}`)
-        // console.log(`${message.time}`)
-        // const nowPerf = window.performance.now()
-        // const outPerf = ctx.getOutputTimestamp().performanceTime
-        // const latency = ctx.outputLatency
-        // console.log(`nowPerf ${nowPerf} latency: ${latency} outPerf ${outPerf}`)
-
-        // const midiTime = message.time
-        // const closestAudio = audio.closestClick().toPerf(ctx)
-        // const delta = midiTime.duration.minus(closestAudio.duration)
-        // console.log(`${delta}`)
-      }
-
-      store.dispatch(addNote(message))
+    this.midiEngine.init((press: MidiPress) => {
+      store.dispatch(addPress(press))
+    })
+    this.keyboardEngine.init((press: KeyPress) => {
+      store.dispatch(addPress(press))
     })
 
     const animate = () => {
+      store.dispatch(setTime(PerfTime.now()))
       this.animationHandle = requestAnimationFrame(animate)
     }
 

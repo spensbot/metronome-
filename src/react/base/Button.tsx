@@ -1,5 +1,4 @@
 import { Button as _Button, ButtonProps as _ButtonProps } from "@mui/material"
-import styled from "@emotion/styled"
 
 export interface ButtonProps extends _ButtonProps {}
 

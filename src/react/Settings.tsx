@@ -1,11 +1,12 @@
 import Slider from "./base/Slider"
-import { setTempo, setMetronomeGain } from "../redux/settingsSlice"
-import { useSettings, useDispatch } from "../redux/hooks"
+import { setTempo, setMetronomeGain } from "../redux/metronomeSlice"
+import { useMetronome, useDispatch } from "../redux/hooks"
 import styled from "@emotion/styled"
-import { Tempo } from "../engine/Clock"
+import { Tempo } from "../utils/timeUtils"
 
 export default function Settings() {
-  const { tempo, metronomeGain } = useSettings((settings) => settings)
+  const tempo = useMetronome((state) => state.tempo)
+  const gain = useMetronome((state) => state.metronomeGain)
   const bpm = tempo.bpm()
   const dispatch = useDispatch()
 
@@ -27,7 +28,7 @@ export default function Settings() {
           min={0}
           max={1}
           step={0.01}
-          value={metronomeGain}
+          value={gain}
           onChange={(_e, value) => {
             dispatch(setMetronomeGain(value as number))
           }}

@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import settingsReducer from './settingsSlice'
-import noteReducer from './noteSlice'
+import metronomeReducer from './metronomeSlice'
 
 export const store = configureStore({
   reducer: {
-    settings: settingsReducer,
-    note: noteReducer
+    metronome: metronomeReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

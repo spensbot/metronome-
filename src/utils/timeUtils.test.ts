@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
-import { Tempo, Duration, AudioTime, PerfTime } from './Clock'
-import { getAudioContext } from './audioUtils'
+import { Tempo, Duration, AudioTime, PerfTime } from './timeUtils'
+import { getAudioContext } from '../engine/audioUtils'
 
 class AudioContextMock {
   currentTime = 1

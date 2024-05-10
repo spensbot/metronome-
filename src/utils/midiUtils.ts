@@ -1,4 +1,4 @@
-import { PerfTime } from "./Clock"
+import { PerfTime } from "./timeUtils"
 
 export type MessageType = 'off' | 'on' | 'key_pressure' | 'cc' | 'prog_change' | 'channel_pressure' | 'pitch_bend' | 'unknown'
 
@@ -23,12 +23,23 @@ function splitBits(number: number): [number, number] {
   return [firstFourBits, lastFourBits];
 }
 
+export interface MidiDevice {
+  name: string
+  mfg: string
+  id: string
+}
 
-export interface MidiMessage<Time = PerfTime> {
-  time: Time,
-  type: MessageType,
-  channel: number, // 0-15
-  note: number, // 0-127
+export interface MidiInput {
+  type: 'MidiInput'
+  channel: number
+  note: number
+  device: MidiDevice
+}
+
+export interface MidiMessage {
+  time: PerfTime
+  type: MessageType
+  input: MidiInput
   velocity: number // 0-127
 }
 
@@ -42,16 +53,20 @@ const messageTypeMap: { [key: number]: MessageType } = {
   0b1110: 'pitch_bend'
 }
 
-export function parseMidiMessage(e: MIDIMessageEvent): MidiMessage<PerfTime> {
+export function parseMidiMessage(e: MIDIMessageEvent, device: MidiDevice): MidiMessage {
   const [typeInt, channel] = splitBits(e.data[0])
   const noteInt = e.data[1]
   const velocityInt = e.data[2]
 
   return {
-    time: PerfTime.fromMidi(e),
+    time: PerfTime.fromEvent(e),
     type: messageTypeMap[typeInt] ?? "unknown",
-    channel,
-    note: noteInt,
+    input: {
+      type: 'MidiInput',
+      channel: channel,
+      note: noteInt,
+      device
+    },
     velocity: velocity(velocityInt)
   }
 }

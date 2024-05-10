@@ -1,7 +1,7 @@
 import { getAudioContext, loadBuffer } from './audioUtils'
 import metronomePath from '/metronome.mp3'
 import { store } from '../redux/store'
-import { AudioTime, PerfTime, Duration, Tempo } from './Clock'
+import { AudioTime, PerfTime, Duration, Tempo } from '../utils/timeUtils'
 
 interface GraphData {
   ctx: AudioContext
@@ -43,8 +43,7 @@ export default class AudioEngine {
     this.stop()
 
     const prepNextClick = (time: AudioTime) => {
-      console.log(`prepNextClick`)
-      const { tempo, metronomeGain } = store.getState().settings
+      const { tempo, metronomeGain } = store.getState().metronome
       this.tempo = tempo
 
       this.playMetronomeSound(metronomeGain, time)
@@ -62,7 +61,7 @@ export default class AudioEngine {
       this.timeoutId = window.setTimeout(() => prepNextClick(nextClickTime), interval.ms())
     }
 
-    const { tempo, metronomeGain } = store.getState().settings
+    const tempo = store.getState().metronome.tempo
     this.tempo = tempo
 
     prepNextClick(this.currentTime().plus(tempo.period()))

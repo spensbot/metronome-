@@ -1,35 +1,21 @@
 import styled from "@emotion/styled"
-import engine from "../engine/engine"
-import useAnimatedValue from "./hooks/useAnimatedValue"
-import { MidiMessage } from "../engine/midiUtils"
-import { PerfTime } from "../engine/Clock"
-import { useNote } from "../redux/hooks"
+import { useMetronome } from "../redux/hooks"
+import { Press_t } from "../redux/MetronomeState"
+import { getWindowInfo } from "../utils/windowUtils"
 
-const CURSOR_WIDTH = 10
-
-function Cursor() {
-  const cursorRatio = useAnimatedValue(() => {
-    const audio = engine.audioEngine
-    return 0.5
-  })
-
-  return <CursorRoot style={{ left: `${cursorRatio * 100}%` }} />
-}
-
-const CursorRoot = styled.div`
-  width: 1px;
-  height: 100%;
-  background-color: #ee5;
-  position: absolute;
-`
-
-function Note({ note }: { note: MidiMessage }) {
+function Press({ press }: { press: Press_t }) {
   // const ratio = engine.audioEngine.visualizerRatio(note.time)
+  const state = useMetronome((state) => state)
+  const window = getWindowInfo(state)
+  console.log(
+    `Start: ${window.start} | P ${window.period} | s ${press.time.duration}`
+  )
+  const ratio = (press.time.duration.s() - window.start) / window.length
 
-  return <NoteRoot style={{ left: `${100}%` }} />
+  return <PressRoot style={{ left: `${ratio * 100}%` }} />
 }
 
-const NoteRoot = styled.div`
+const PressRoot = styled.div`
   width: 2px;
   height: 100%;
   background-color: #55f;
@@ -37,15 +23,16 @@ const NoteRoot = styled.div`
 `
 
 export default function Visualizer() {
-  const notes = useNote((state) => state.focusedNotes)
+  // const notes = usePress((state) => state.focusedPresss)
+  const playheadRatio = useMetronome((state) => state.playheadRatio)
+  const presses = useMetronome((state) => state.layers[0].presses)
 
   return (
     <Backdrop>
-      <Center />
-      <Cursor />
-      {notes.map((note) => {
-        return <Note note={note} key={note.time.duration.s()} />
-      })}
+      <Playhead style={{ left: `${playheadRatio * 100}%` }} />
+      {presses.map((press) => (
+        <Press press={press} />
+      ))}
     </Backdrop>
   )
 }
@@ -59,8 +46,9 @@ const Backdrop = styled.div`
   position: relative;
 `
 
-const Center = styled.div`
+const Playhead = styled.div`
   width: 1px;
   height: 100%;
-  background-color: #eee;
+  background-color: #fff;
+  position: absolute;
 `
