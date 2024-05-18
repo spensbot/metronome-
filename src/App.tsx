@@ -1,14 +1,12 @@
 import Visualizer from "./react/Visualizer"
-import Controls from "./react/Controls"
-import Settings from "./react/Settings"
 import { Debugger } from "./react/Debugger"
+import Interface from "./react/Interface"
 
 function App() {
   return (
     <>
       <Visualizer />
-      <Controls />
-      <Settings />
+      <Interface />
       <Debugger />
     </>
   )
