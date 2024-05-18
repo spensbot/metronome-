@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { useMetronome } from "../redux/hooks"
-import { getWindowInfo } from "../utils/windowUtils"
+import { visualizerRange } from "../utils/visualizerUtils"
 
 export function Time(s: number) {
   return <P>{s.toFixed(2)}</P>
@@ -31,18 +31,18 @@ const SectionRoot = styled.div`
 export function Debugger() {
   const state = useMetronome((state) => state)
 
-  const window = getWindowInfo(state)
+  const range = visualizerRange(state)
 
   return (
     <Root>
-      <Section title="Window">
-        {Time(window.start)}
-        {Time(window.now)}
-        {Time(window.end)}
-        {Time(window.length)}
+      <Section title="VisualizerRange">
+        {Time(range.start)}
+        {Time(range.end)}
       </Section>
       <Section title="Presses">
-        {state.layers[0].presses.map((press) => Time(press.time.duration.s()))}
+        {state.steady.layers[0].presses.map((press) =>
+          Time(press.time.duration.s())
+        )}
       </Section>
     </Root>
   )

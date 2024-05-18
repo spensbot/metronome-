@@ -54,9 +54,10 @@ const messageTypeMap: { [key: number]: MessageType } = {
 }
 
 export function parseMidiMessage(e: MIDIMessageEvent, device: MidiDevice): MidiMessage {
-  const [typeInt, channel] = splitBits(e.data[0])
-  const noteInt = e.data[1]
-  const velocityInt = e.data[2]
+  const data = e.data ?? Uint8Array.from([0, 0, 0])
+  const [typeInt, channel] = splitBits(data[0])
+  const noteInt = data[1]
+  const velocityInt = data[2]
 
   return {
     time: PerfTime.fromEvent(e),

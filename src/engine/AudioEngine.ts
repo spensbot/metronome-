@@ -43,7 +43,7 @@ export default class AudioEngine {
     this.stop()
 
     const prepNextClick = (time: AudioTime) => {
-      const { tempo, metronomeGain } = store.getState().metronome
+      const { tempo, metronomeGain } = store.getState().metronome.steady
       this.tempo = tempo
 
       this.playMetronomeSound(metronomeGain, time)
@@ -61,7 +61,7 @@ export default class AudioEngine {
       this.timeoutId = window.setTimeout(() => prepNextClick(nextClickTime), interval.ms())
     }
 
-    const tempo = store.getState().metronome.tempo
+    const tempo = store.getState().metronome.steady.tempo
     this.tempo = tempo
 
     prepNextClick(this.currentTime().plus(tempo.period()))

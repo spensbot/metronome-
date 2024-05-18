@@ -1,16 +1,15 @@
 import styled from "@emotion/styled"
-import { useMetronome } from "../redux/hooks"
-import { Press_t } from "../redux/MetronomeState"
-import { getWindowInfo } from "../utils/windowUtils"
+import { useMetronome, useSteady } from "../../redux/hooks"
+import { Press_t } from "../../redux/MetronomeState"
+import { visualizerRange } from "../../utils/visualizerUtils"
+import { unlerp } from "../../utils/math"
 
 function Press({ press }: { press: Press_t }) {
   // const ratio = engine.audioEngine.visualizerRatio(note.time)
   const state = useMetronome((state) => state)
-  const window = getWindowInfo(state)
-  console.log(
-    `Start: ${window.start} | P ${window.period} | s ${press.time.duration}`
-  )
-  const ratio = (press.time.duration.s() - window.start) / window.length
+  const range = visualizerRange(state)
+
+  const ratio = unlerp(range, press.time.duration.s())
 
   return <PressRoot style={{ left: `${ratio * 100}%` }} />
 }
@@ -23,9 +22,8 @@ const PressRoot = styled.div`
 `
 
 export default function Visualizer() {
-  // const notes = usePress((state) => state.focusedPresss)
-  const playheadRatio = useMetronome((state) => state.playheadRatio)
-  const presses = useMetronome((state) => state.layers[0].presses)
+  const playheadRatio = useSteady((state) => state.playheadRatio)
+  const presses = useSteady((state) => state.layers[0].presses)
 
   return (
     <Backdrop>

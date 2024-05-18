@@ -32,6 +32,10 @@ export class Duration {
   toString(): string {
     return `${this.s().toFixed(3)}s`
   }
+
+  abs(): Duration {
+    return Duration.s(Math.abs(this.s()))
+  }
 }
 
 export class Tempo {

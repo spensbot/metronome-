@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { PerfTime, Tempo } from '../utils/timeUtils'
-import { isTimeInWindow } from '../utils/windowUtils'
+import { isTimeInVisualizer } from '../utils/visualizerUtils'
 import { Layer_t, MetronomeState, Press_t, isInputEqual, initialState, initLayer } from './MetronomeState'
 import { deleteElement } from '../utils/listUtils'
 
 function removePressesOutsideWindow(state: MetronomeState) {
-  for (const layer of state.layers) {
+  for (const layer of state.steady.layers) {
     layer.presses = layer.presses.filter(
-      press => isTimeInWindow(state, press.time)
+      press => isTimeInVisualizer(state, press.time)
     )
   }
 }
@@ -26,32 +26,32 @@ export const noteSlice = createSlice({
   initialState,
   reducers: {
     setTime: (state, action: PayloadAction<PerfTime>) => {
-      state.time = action.payload
+      state.animated.time = action.payload
     },
     setTempo: (state, action: PayloadAction<Tempo>) => {
-      state.tempo = action.payload
+      state.steady.tempo = action.payload
     },
     setMetronomeGain: (state, action: PayloadAction<number>) => {
-      state.metronomeGain = action.payload
+      state.steady.metronomeGain = action.payload
     },
     addLayer: (state) => {
-      state.layers.push(initLayer())
+      state.steady.layers.push(initLayer())
     },
     deleteLayer: (state, action: PayloadAction<number>) => {
-      deleteElement(state.layers, action.payload)
+      deleteElement(state.steady.layers, action.payload)
     },
     addPress: (state, action: PayloadAction<Press_t>) => {
       removePressesOutsideWindow(state as MetronomeState)
 
       const press = action.payload
-      for (const layer of state.layers) {
+      for (const layer of state.steady.layers) {
         if (doesLayerAcceptPress(layer as Layer_t, press)) {
           layer.presses.push(press)
         }
       }
     },
-    setVisualizerBeats: (state, action: PayloadAction<number>) => {
-      state.visualizerBeats = action.payload
+    setVisualizerLength: (state, action: PayloadAction<number>) => {
+      state.steady.visualizerLength = action.payload
     },
   },
 })
@@ -64,7 +64,7 @@ export const {
   addLayer,
   deleteLayer,
   addPress,
-  setVisualizerBeats
+  setVisualizerLength
 } = noteSlice.actions
 
 export default noteSlice.reducer

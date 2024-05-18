@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 import App from "./App.tsx"
 import { Provider } from "react-redux"
 import { store } from "./redux/store.ts"
-import { ThemeProvider, createTheme, styled } from "@mui/material/styles"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
 import "./main.css"
 
 const theme = createTheme({

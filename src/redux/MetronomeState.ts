@@ -13,13 +13,22 @@ export interface Layer_t {
   presses: Press_t[]
 }
 
-export interface MetronomeState {
-  time: PerfTime,
-  tempo: Tempo,
-  metronomeGain: number,
-  visualizerBeats: number // how many beats can be seen on the visualizer at once
+export interface AnimatedState {
+  time: PerfTime
+}
+
+export interface SteadyState {
+  tempo: Tempo
+  scheduledBeat: PerfTime
+  metronomeGain: number
+  visualizerLength: number // how many seconds can be seen on the visualizer at once
   playheadRatio: number
   layers: Layer_t[]
+}
+
+export interface MetronomeState {
+  animated: AnimatedState
+  steady: SteadyState
 }
 
 export function initLayer(): Layer_t {
@@ -31,12 +40,17 @@ export function initLayer(): Layer_t {
 }
 
 export const initialState: MetronomeState = {
-  time: PerfTime.now(),
-  tempo: Tempo.bpm(60),
-  metronomeGain: 0.5,
-  visualizerBeats: 8,
-  playheadRatio: 0.33,
-  layers: [initLayer()]
+  animated: {
+    time: PerfTime.now(),
+  },
+  steady: {
+    tempo: Tempo.bpm(60),
+    scheduledBeat: PerfTime.now(),
+    metronomeGain: 0.5,
+    visualizerLength: 8, // Seconds
+    playheadRatio: 0.33,
+    layers: [initLayer()]
+  }
 }
 
 export function isInputEqual(a: Input_t, b: Input_t) {

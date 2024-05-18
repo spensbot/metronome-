@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "npm run dev",
-    "test": "vitest"
+    "test": "vitest",
+    "test-all": "npm run lint && tsc && vitest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
