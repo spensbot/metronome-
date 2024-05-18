@@ -24,6 +24,8 @@ export function getBeatTimesInWindow(state: MetronomeState): PerfTime[] {
   const pastBeatCount = Math.floor((nextBeat - range.start) / period)
   const futureBeatCount = Math.floor((range.end - nextBeat) / period)
 
+  console.log(nextBeat)
+
   const pastBeats = indexArray(pastBeatCount).map(i => nextBeat - (i + 1) * period).reverse()
   const futureBeats = indexArray(futureBeatCount).map(i => nextBeat + i * period)
 

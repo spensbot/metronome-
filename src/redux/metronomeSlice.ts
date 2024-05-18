@@ -53,6 +53,9 @@ export const noteSlice = createSlice({
     setVisualizerLength: (state, action: PayloadAction<number>) => {
       state.steady.visualizerLength = action.payload
     },
+    setScheduledBeat: (state, action: PayloadAction<PerfTime>) => {
+      state.steady.scheduledBeat = action.payload
+    },
   },
 })
 
@@ -64,7 +67,8 @@ export const {
   addLayer,
   deleteLayer,
   addPress,
-  setVisualizerLength
+  setVisualizerLength,
+  setScheduledBeat
 } = noteSlice.actions
 
 export default noteSlice.reducer

@@ -1,7 +1,10 @@
 import styled from "@emotion/styled"
 import { useMetronome, useSteady } from "../../redux/hooks"
 import { Press_t } from "../../redux/MetronomeState"
-import { visualizerRange } from "../../utils/visualizerUtils"
+import {
+  getBeatTimesInWindow,
+  visualizerRange,
+} from "../../utils/visualizerUtils"
 import { unlerp } from "../../utils/math"
 
 function Press({ press }: { press: Press_t }) {
@@ -15,9 +18,31 @@ function Press({ press }: { press: Press_t }) {
 }
 
 const PressRoot = styled.div`
-  width: 2px;
+  width: 1px;
   height: 100%;
   background-color: #55f;
+  position: absolute;
+`
+
+function Beats() {
+  const state = useMetronome((state) => state)
+  const beats = getBeatTimesInWindow(state)
+  const range = visualizerRange(state)
+
+  return (
+    <>
+      {beats.map((beat) => {
+        const ratio = unlerp(range, beat.duration.s())
+        return <Beat style={{ left: `${ratio * 100}%` }} />
+      })}
+    </>
+  )
+}
+
+const Beat = styled.div`
+  width: 1px;
+  height: 100%;
+  background-color: #fff5;
   position: absolute;
 `
 
@@ -31,6 +56,7 @@ export default function Visualizer() {
       {presses.map((press) => (
         <Press press={press} />
       ))}
+      <Beats />
     </Backdrop>
   )
 }

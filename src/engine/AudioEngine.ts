@@ -2,6 +2,7 @@ import { getAudioContext, loadBuffer } from './audioUtils'
 import metronomePath from '/metronome.mp3'
 import { store } from '../redux/store'
 import { AudioTime, PerfTime, Duration, Tempo } from '../utils/timeUtils'
+import { setScheduledBeat } from '../redux/metronomeSlice'
 
 interface GraphData {
   ctx: AudioContext
@@ -103,5 +104,6 @@ export default class AudioEngine {
     gainNode.gain.setValueAtTime(gain, time.duration.s())
     source.start(time.duration.s())
     this.nextClick = time.toPerf(ctx)
+    store.dispatch(setScheduledBeat(this.nextClick))
   }
 }
