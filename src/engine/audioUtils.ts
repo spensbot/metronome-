@@ -1,5 +1,5 @@
 export function getAudioContext() {
-  // TODO: Handle browsers with limited support
+  // TODO: Handle browsers with limited support?
   const audioContextClass = window.AudioContext
   return new audioContextClass({
     latencyHint: 'interactive',

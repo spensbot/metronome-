@@ -33,14 +33,6 @@ export class Engine {
   cleanup() {
     cancelAnimationFrame(this.animationHandle)
   }
-
-  start() {
-    this.audioEngine.start()
-  }
-
-  stop() {
-    this.audioEngine.stop()
-  }
 }
 
 const engine = new Engine()

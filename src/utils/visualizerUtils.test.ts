@@ -12,7 +12,9 @@ const state: MetronomeState = {
     metronomeGain: 1,
     visualizerLength: 4,
     playheadRatio: 0.5,
-    layers: []
+    layers: [],
+    bars: 16,
+    playState: 'Stopped'
   }
 }
 

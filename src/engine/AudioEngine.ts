@@ -3,6 +3,7 @@ import metronomePath from '/metronome.mp3'
 import { store } from '../redux/store'
 import { AudioTime, PerfTime, Duration, Tempo } from '../utils/timeUtils'
 import { setScheduledBeat } from '../redux/metronomeSlice'
+import { PlayState } from '../redux/MetronomeState'
 
 interface GraphData {
   ctx: AudioContext
@@ -29,6 +30,7 @@ export default class AudioEngine {
   tempo: Tempo = Tempo.bpm(120)
   timeoutId: number | null = null
   graph: GraphData | null = null
+  playState: PlayState = 'Stopped'
 
   async init() {
     if (this.graph === null) {
@@ -36,6 +38,11 @@ export default class AudioEngine {
     } else {
       this.graph.ctx.resume()
     }
+  }
+
+  update() {
+
+    store.getState().metronome.steady.playState
   }
 
   async start() {

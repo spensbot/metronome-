@@ -24,22 +24,15 @@ const PressRoot = styled.div`
   position: absolute;
 `
 
-function Beats() {
+function Targets() {
   const state = useMetronome((state) => state)
   const beats = getBeatTimesInWindow(state)
   const range = visualizerRange(state)
 
-  return (
-    <>
-      {beats.map((beat) => {
-        const ratio = unlerp(range, beat.duration.s())
-        return <Beat style={{ left: `${ratio * 100}%` }} />
-      })}
-    </>
-  )
+  return <></>
 }
 
-const Beat = styled.div`
+const Target = styled.div`
   width: 1px;
   height: 100%;
   background-color: #fff5;
@@ -56,7 +49,7 @@ export default function Visualizer() {
       {presses.map((press) => (
         <Press press={press} />
       ))}
-      <Beats />
+      <Targets />
     </Backdrop>
   )
 }

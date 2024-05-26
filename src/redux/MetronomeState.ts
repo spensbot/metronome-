@@ -7,8 +7,14 @@ export type Input_t = MidiInput | KeyInput
 
 export type Press_t = MidiPress | KeyPress
 
+export type PlayState = 'Playing' | 'Stopped'
+
+export interface SessionState {
+
+}
+
 export interface Layer_t {
-  fractions: number[] // Fractions of 
+  fractions: number[] // Fractions of a beat to hit
   inputs: Input_t[] // Empty means this layer accepts all inputs
   presses: Press_t[]
 }
@@ -24,6 +30,8 @@ export interface SteadyState {
   visualizerLength: number // how many seconds can be seen on the visualizer at once
   playheadRatio: number
   layers: Layer_t[]
+  bars: number
+  playState: PlayState
 }
 
 export interface MetronomeState {
@@ -49,7 +57,9 @@ export const initialState: MetronomeState = {
     metronomeGain: 0.5,
     visualizerLength: 8, // Seconds
     playheadRatio: 0.33,
-    layers: [initLayer()]
+    layers: [initLayer()],
+    bars: 8,
+    playState: 'Stopped'
   }
 }
 

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { PerfTime, Tempo } from '../utils/timeUtils'
 import { isTimeInVisualizer } from '../utils/visualizerUtils'
-import { Layer_t, MetronomeState, Press_t, isInputEqual, initialState, initLayer } from './MetronomeState'
+import { Layer_t, MetronomeState, Press_t, isInputEqual, initialState, initLayer, PlayState } from './MetronomeState'
 import { deleteElement } from '../utils/listUtils'
 
 function removePressesOutsideWindow(state: MetronomeState) {
@@ -56,6 +56,9 @@ export const noteSlice = createSlice({
     setScheduledBeat: (state, action: PayloadAction<PerfTime>) => {
       state.steady.scheduledBeat = action.payload
     },
+    setPlayState: (state, action: PayloadAction<PlayState>) => {
+      state.steady.playState = action.payload
+    }
   },
 })
 
@@ -68,7 +71,8 @@ export const {
   deleteLayer,
   addPress,
   setVisualizerLength,
-  setScheduledBeat
+  setScheduledBeat,
+  setPlayState
 } = noteSlice.actions
 
 export default noteSlice.reducer

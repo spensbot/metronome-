@@ -1,12 +1,28 @@
 import Button from "../base/Button"
-import engine from "../../engine/engine"
 import styled from "@emotion/styled"
+import { useDispatch, useSteady } from "../../redux/hooks"
+import { setPlayState } from "../../redux/metronomeSlice"
+
+function StartStop() {
+  const playState = useSteady((state) => state.playState)
+  const dispatch = useDispatch()
+
+  if (playState === "Playing") {
+    return (
+      <Button onClick={() => dispatch(setPlayState("Stopped"))}>Stop</Button>
+    )
+  }
+  if (playState === "Stopped") {
+    return (
+      <Button onClick={() => dispatch(setPlayState("Playing"))}>Start</Button>
+    )
+  }
+}
 
 export default function Controls() {
   return (
     <Root>
-      <Button onClick={() => engine.start()}>Start</Button>
-      <Button onClick={() => engine.stop()}>Stop</Button>
+      <StartStop />
     </Root>
   )
 }
