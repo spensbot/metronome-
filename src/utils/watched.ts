@@ -1,12 +1,25 @@
 export default class Watched<T> {
-  private val: T | null = null
+  private val: T | undefined = undefined
+  private getter: () => T
 
-  getIfUpdated(val: T): T | null {
+  constructor(getter: () => T) {
+    this.getter = getter
+  }
+
+  getIfUpdated(): T | null {
+    const val = this.getter()
     if (val != this.val) {
       this.val = val
-      return val
+      return this.val
     } else {
       return null
+    }
+  }
+
+  ifUpdated(f: (val: T) => void) {
+    const updatedVal = this.getIfUpdated()
+    if (updatedVal !== null) {
+      f(updatedVal)
     }
   }
 }

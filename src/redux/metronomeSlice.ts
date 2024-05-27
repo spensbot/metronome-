@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { PerfTime, Tempo } from '../utils/timeUtils'
 import { isTimeInVisualizer } from '../utils/visualizerUtils'
-import { Layer_t, MetronomeState, Press_t, isInputEqual, initialState, initLayer, PlayState } from './MetronomeState'
+import { Layer, MetronomeState, Press_t, isInputEqual, initialState, initLayer, PlayState } from './MetronomeState'
 import { deleteElement } from '../utils/listUtils'
 
 function removePressesOutsideWindow(state: MetronomeState) {
@@ -13,7 +13,7 @@ function removePressesOutsideWindow(state: MetronomeState) {
   }
 }
 
-function doesLayerAcceptPress(layer: Layer_t, press: Press_t): boolean {
+function doesLayerAcceptPress(layer: Layer, press: Press_t): boolean {
   if (layer.inputs.length === 0) return true
   for (const input of layer.inputs) {
     if (isInputEqual(input, press.input)) return true
@@ -45,7 +45,7 @@ export const noteSlice = createSlice({
 
       const press = action.payload
       for (const layer of state.steady.layers) {
-        if (doesLayerAcceptPress(layer as Layer_t, press)) {
+        if (doesLayerAcceptPress(layer as Layer, press)) {
           layer.presses.push(press)
         }
       }

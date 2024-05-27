@@ -1,7 +1,10 @@
 import Watched from "./watched"
 
 test('Watched int', () => {
-  const w = new Watched()
-  expect(w.getIfUpdated(2)).toBe(2)
-  expect(w.getIfUpdated(2)).toBe(null)
+  let val = 2
+  const w = new Watched<number>(() => val)
+  expect(w.getIfUpdated()).toBe(2)
+  expect(w.getIfUpdated()).toBe(null)
+  val = 3
+  expect(w.getIfUpdated()).toBe(3)
 })

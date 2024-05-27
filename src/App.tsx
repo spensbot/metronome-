@@ -1,6 +1,7 @@
 import Visualizer from "./react/visualizer/Visualizer"
 import { Debugger } from "./react/Debugger"
 import Interface from "./react/controls/Interface"
+import "./engine/engine"
 
 function App() {
   return (

@@ -1,10 +1,7 @@
 import styled from "@emotion/styled"
 import { useMetronome, useSteady } from "../../redux/hooks"
 import { Press_t } from "../../redux/MetronomeState"
-import {
-  getBeatTimesInWindow,
-  visualizerRange,
-} from "../../utils/visualizerUtils"
+import { visualizerRange } from "../../utils/visualizerUtils"
 import { unlerp } from "../../utils/math"
 
 function Press({ press }: { press: Press_t }) {
@@ -25,19 +22,8 @@ const PressRoot = styled.div`
 `
 
 function Targets() {
-  const state = useMetronome((state) => state)
-  const beats = getBeatTimesInWindow(state)
-  const range = visualizerRange(state)
-
   return <></>
 }
-
-const Target = styled.div`
-  width: 1px;
-  height: 100%;
-  background-color: #fff5;
-  position: absolute;
-`
 
 export default function Visualizer() {
   const playheadRatio = useSteady((state) => state.playheadRatio)

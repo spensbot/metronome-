@@ -14,7 +14,11 @@ const state: MetronomeState = {
     playheadRatio: 0.5,
     layers: [],
     bars: 16,
-    playState: 'Stopped'
+    playState: 'Stopped',
+    sessionState: null,
+    timeSignature: {
+      beatsPerMeasure: 4
+    }
   }
 }
 

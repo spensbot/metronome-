@@ -5,6 +5,8 @@ import { store } from '../redux/store'
 import { addPress, setTime } from "../redux/metronomeSlice"
 import { KeyPress, KeyboardEngine } from "./KeyboardEngine"
 import { PerfTime } from "../utils/timeUtils"
+import Watched from "../utils/watched"
+import { PlayState } from "../redux/MetronomeState"
 
 export class Engine {
   audioEngine: AudioEngine = new AudioEngine()
@@ -12,8 +14,11 @@ export class Engine {
   private keyboardEngine: KeyboardEngine = new KeyboardEngine()
   lastCursorRatio: number = 0
   animationHandle: number = 0
+  playState = new Watched<PlayState>(() => store.getState().metronome.steady.playState)
 
   init() {
+    console.log('init')
+
     this.audioEngine.init()
     this.midiEngine.init((press: MidiPress) => {
       store.dispatch(addPress(press))
@@ -23,6 +28,14 @@ export class Engine {
     })
 
     const animate = () => {
+      this.playState.ifUpdated((val) => {
+        if (val === 'Playing') {
+          console.log('playing')
+          this.audioEngine.start()
+        } else {
+          this.audioEngine.stop()
+        }
+      })
       store.dispatch(setTime(PerfTime.now()))
       this.animationHandle = requestAnimationFrame(animate)
     }

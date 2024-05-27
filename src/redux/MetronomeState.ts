@@ -2,6 +2,7 @@ import { MidiInput } from '../utils/midiUtils'
 import { KeyInput, KeyPress } from '../engine/KeyboardEngine'
 import { PerfTime, Tempo } from '../utils/timeUtils'
 import { MidiPress } from '../engine/MidiEngine'
+import { Loop, TimeSignature, defaultLoops } from './loop'
 
 export type Input_t = MidiInput | KeyInput
 
@@ -13,8 +14,8 @@ export interface SessionState {
 
 }
 
-export interface Layer_t {
-  fractions: number[] // Fractions of a beat to hit
+export interface Layer {
+  loop: Loop
   inputs: Input_t[] // Empty means this layer accepts all inputs
   presses: Press_t[]
 }
@@ -29,9 +30,11 @@ export interface SteadyState {
   metronomeGain: number
   visualizerLength: number // how many seconds can be seen on the visualizer at once
   playheadRatio: number
-  layers: Layer_t[]
+  layers: Layer[]
   bars: number
   playState: PlayState
+  sessionState: SessionState | null
+  timeSignature: TimeSignature
 }
 
 export interface MetronomeState {
@@ -39,9 +42,9 @@ export interface MetronomeState {
   steady: SteadyState
 }
 
-export function initLayer(): Layer_t {
+export function initLayer(): Layer {
   return {
-    fractions: [1.0],
+    loop: defaultLoops[0],
     inputs: [],
     presses: []
   }
@@ -59,7 +62,11 @@ export const initialState: MetronomeState = {
     playheadRatio: 0.33,
     layers: [initLayer()],
     bars: 8,
-    playState: 'Stopped'
+    playState: 'Stopped',
+    sessionState: null,
+    timeSignature: {
+      beatsPerMeasure: 4
+    }
   }
 }
 
